@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M100 25 L165 62.5 L165 137.5 L100 175 L35 137.5 L35 62.5 Z"
+    fill="none"
+    stroke="url(#brandGradient)"
+    stroke-width="14"
+    stroke-linejoin="round"
+  />
+
+  <path
+    d="M100 60 L135 80 L135 120 L100 140 L65 120 L65 80 Z"
+    fill="url(#accentGradient)"
+    opacity="0.9"
+  />
+
+  <circle cx="100" cy="100" r="15" fill="#FFFFFF" />
+</svg>

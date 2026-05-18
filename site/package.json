@@ -1,0 +1,26 @@
+{
+  "name": "site",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "predev": "node symlink-blueprints.mjs",
+    "dev": "astro dev",
+    "prestart": "node symlink-blueprints.mjs",
+    "start": "astro dev",
+    "prebuild": "node symlink-blueprints.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint:structure": "node validate-blueprints.mjs",
+    "lint:md": "markdownlint \"../blueprints/**/*.md\" --config \"../.markdownlint.json\"",
+    "lint": "npm run lint:structure && npm run lint:md"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.39.2",
+    "astro": "^6.3.1",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "markdownlint-cli": "0.48.0"
+  }
+}

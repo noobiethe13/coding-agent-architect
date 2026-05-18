@@ -1,0 +1,37 @@
+---
+title: Coding Agent Architect
+description: A registry for AI coding agents, skills, and setup rules.
+tool: claude-code
+type: setup
+author: System
+verified_version: "1.0.0"
+template: splash
+hero:
+  tagline: The premier open-source registry for AI coding agents, blueprints, and skills. Build faster with validated autonomous flows.
+  image:
+    file: ../../assets/logo.svg
+    alt: Coding Agent Architect logo
+  actions:
+    - text: Explore Blueprints
+      link: /blueprints/claude-code/core-setup/phase-0/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/nobbiethe13/coding-agent-architect
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Claude Code Blueprints" icon="puzzle">
+    Discover and integrate robust, production-ready prompts and skills directly into your Claude Code workflow.
+  </Card>
+  <Card title="Rigorous Validation" icon="approve-check">
+    All blueprints are strictly validated by Zod and Markdownlint to ensure structural integrity across models.
+  </Card>
+  <Card title="Architectural Standards" icon="setting">
+    Learn how to construct resilient AI pipelines and context-aware systems for autonomous agent workflows.
+  </Card>
+</CardGrid>

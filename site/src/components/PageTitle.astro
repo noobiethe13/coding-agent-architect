@@ -1,0 +1,136 @@
+---
+const PAGE_TITLE_ID = '_top';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, unknown>;
+
+const title = data.title as string;
+const isBlueprint = entry.id.startsWith('blueprints/');
+const verifiedVersion =
+  typeof data.verified_version === 'string' ? data.verified_version : undefined;
+const tool = typeof data.tool === 'string' ? data.tool : undefined;
+const tags = Array.isArray(data.tags)
+  ? (data.tags.filter((t) => typeof t === 'string') as string[])
+  : [];
+
+const showMeta = isBlueprint && (verifiedVersion || tags.length > 0);
+
+const toolLabel = tool
+  ? tool
+      .split('-')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ')
+  : undefined;
+---
+
+<h1 id={PAGE_TITLE_ID}>{title}</h1>
+
+{showMeta && (
+  <div class="blueprint-meta" aria-label="Blueprint metadata">
+    {verifiedVersion && (
+      <span class="blueprint-meta__chip blueprint-meta__chip--version" title="Tool version this blueprint was verified against">
+        <svg
+          class="blueprint-meta__icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+        <span class="blueprint-meta__label">Verified on</span>
+        <span class="blueprint-meta__value">
+          {toolLabel ? `${toolLabel} ` : ''}v{verifiedVersion}
+        </span>
+      </span>
+    )}
+    {tags.length > 0 && (
+      <ul class="blueprint-meta__tags" aria-label="Tags">
+        {tags.map((tag) => (
+          <li class="blueprint-meta__tag">#{tag}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+)}
+
+<style>
+  @layer starlight.core {
+    h1 {
+      margin-top: 1rem;
+      font-size: var(--sl-text-h1);
+      line-height: var(--sl-line-height-headings);
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+  }
+
+  .blueprint-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0.75rem 0 1.25rem;
+    font-size: var(--sl-text-sm);
+    line-height: 1.4;
+  }
+
+  .blueprint-meta__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    background: var(--sl-color-gray-6, var(--sl-color-bg-nav));
+    color: var(--sl-color-gray-2);
+    white-space: nowrap;
+  }
+
+  .blueprint-meta__chip--version {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .blueprint-meta__icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--sl-color-accent-high, var(--sl-color-accent));
+    flex-shrink: 0;
+  }
+
+  .blueprint-meta__label {
+    color: var(--sl-color-gray-3);
+    font-weight: 500;
+  }
+
+  .blueprint-meta__value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .blueprint-meta__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blueprint-meta__tag {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: var(--sl-color-gray-6, var(--sl-color-bg-nav));
+    color: var(--sl-color-gray-2);
+    border: 1px solid var(--sl-color-gray-5);
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+</style>

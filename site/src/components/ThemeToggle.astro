@@ -1,0 +1,137 @@
+---
+/**
+ * Custom Starlight ThemeSelect override — sliding sun ↔ moon switch.
+ * Binary (light/dark only); skips the "auto" state from Starlight's default.
+ * Persists to the same `starlight-theme` localStorage key so it stays
+ * compatible with the inline FOUC-prevention script in ThemeProvider.astro.
+ */
+const label = Astro.locals.t?.('themeSelect.accessibleLabel') ?? 'Select theme';
+---
+
+<starlight-theme-toggle>
+  <button
+    type="button"
+    class="theme-toggle"
+    aria-label={label}
+    aria-pressed="false"
+    title={label}
+  >
+    <svg
+      class="theme-toggle__track-icon theme-toggle__track-icon--sun"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+    </svg>
+
+    <svg
+      class="theme-toggle__track-icon theme-toggle__track-icon--moon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+
+    <span class="theme-toggle__thumb" aria-hidden="true">
+      <svg
+        class="icon-sun"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+      </svg>
+      <svg
+        class="icon-moon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </span>
+  </button>
+</starlight-theme-toggle>
+
+<script>
+  type Theme = 'light' | 'dark';
+  const storageKey = 'starlight-theme';
+
+  const getPreferred = (): Theme =>
+    matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+  const readStored = (): Theme | null => {
+    const v = typeof localStorage !== 'undefined' ? localStorage.getItem(storageKey) : null;
+    return v === 'light' || v === 'dark' ? v : null;
+  };
+
+  const applyTheme = (theme: Theme) => {
+    document.documentElement.dataset.theme = theme;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(storageKey, theme);
+    }
+    // Keep Starlight's other pickers (if any are mounted) in sync.
+    const provider = (window as unknown as { StarlightThemeProvider?: { updatePickers: (t: string) => void } })
+      .StarlightThemeProvider;
+    provider?.updatePickers(theme);
+  };
+
+  const currentTheme = (): Theme => {
+    const ds = document.documentElement.dataset.theme;
+    if (ds === 'light' || ds === 'dark') return ds;
+    return readStored() ?? getPreferred();
+  };
+
+  class StarlightThemeToggle extends HTMLElement {
+    constructor() {
+      super();
+      // Starlight's inline ThemeProvider has already set data-theme before paint.
+      // We just sync the button's aria-pressed; don't write to storage until click.
+      const btn = this.querySelector<HTMLButtonElement>('button.theme-toggle');
+      if (!btn) return;
+      btn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false');
+
+      btn.addEventListener('click', () => {
+        const next: Theme = currentTheme() === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        btn.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+      });
+
+      // Keep aria-pressed in sync if external code changes the theme.
+      const observer = new MutationObserver(() => {
+        const theme = document.documentElement.dataset.theme;
+        btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+    }
+  }
+
+  if (!customElements.get('starlight-theme-toggle')) {
+    customElements.define('starlight-theme-toggle', StarlightThemeToggle);
+  }
+</script>

@@ -53,7 +53,7 @@ follow the docs and tell the user what differed. If you cannot fetch the
 docs, tell the user and ask whether to proceed using the schema in this
 prompt.
 
-PHASE 1 — ELICIT PRINCIPLES THE USER WANTS
+TURN 1 — ELICIT PRINCIPLES THE USER WANTS
 
 Use the AskUserQuestion tool to find out which behavioral principles the user
 wants installed globally. Do NOT post the questions as chat text — use the
@@ -114,7 +114,7 @@ AskUserQuestion with:
 
 Wait for the user's responses.
 
-PHASE 2 — WRITE TO ~/.claude/CLAUDE.md
+TURN 2 — WRITE TO ~/.claude/CLAUDE.md
 
 If ~/.claude/CLAUDE.md does not exist, create it. If it exists and does NOT
 contain the marker, append to it (preserving any existing content).
@@ -151,7 +151,7 @@ Use HTML-style block comments to delimit the section (per the docs, block-level
 HTML comments are stripped before injection into Claude's context, so they
 serve as maintainer markers without consuming tokens at runtime).
 
-PHASE 3 — CONFIRM AND CLOSE
+TURN 3 — CONFIRM AND CLOSE
 
 Post a single line in chat:
 "Phase 0 complete — global behavioral principles installed at ~/.claude/CLAUDE.md."

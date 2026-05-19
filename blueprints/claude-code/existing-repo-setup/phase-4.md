@@ -1,5 +1,5 @@
 ---
-title: "Phase 5: CONTRIBUTING-AI.md & Wiring Validation"
+title: "Phase 4: CONTRIBUTING-AI.md & Wiring Validation"
 description: "Generates a human-facing onboarding doc (CONTRIBUTING-AI.md) and performs a wiring-only validation pass of the setup."
 tool: "claude-code"
 type: "setup"
@@ -18,9 +18,9 @@ This phase performs two final tasks to close out your Claude Code setup:
 
 ## Prerequisites & Execution
 
-- **Prerequisites:** - Phase 0 marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
-  - Phase 1 outputs must be present in `CLAUDE.md`.
-  - Phases 2, 3, and 4 are optional; this phase will dynamically adapt to document and validate whatever was actually set up.
+- **Prerequisites:** - The global behavioral guidelines marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
+  - The project `CLAUDE.md` must contain Lessons Learned and skills/agents index sections (set up by an earlier phase).
+  - All other earlier phases are optional; this phase will dynamically adapt to document and validate whatever was actually set up.
 - **Token cost:** Low-medium. Mostly involves inspection, synthesis, and one `AskUserQuestion` interaction for approval.
 
 ## The Prompt
@@ -33,8 +33,18 @@ for human teammates and a wiring-only validation pass.
 
 PRE-FLIGHT — VERIFY PREREQUISITES
 
-- Phase 0, 1 completed (markers and CLAUDE.md augmentation present)
-- Phase 2, 3, 4 may or may not have run; this phase adapts to what exists
+- Read ~/.claude/CLAUDE.md and confirm the marker
+  `# CLAUDE-PROMPTS-PHASE-0-INSTALLED` is present (universal behavioral
+  guidelines installed at User-level CLAUDE.md).
+- Read the project CLAUDE.md (./CLAUDE.md or ./.claude/CLAUDE.md) and
+  confirm it contains the headings `## Lessons Learned`,
+  `## Skills available in this project`, and
+  `## Agents available in this project` (added by an earlier setup phase).
+- Other earlier phases may or may not have run; this phase adapts to
+  what exists.
+
+If either of the first two checks fails, surface a clear notice
+describing what's missing and pause for user direction.
 
 SELF-VERIFICATION
 
@@ -58,7 +68,8 @@ Build a complete inventory of the Claude Code setup:
    in plain language)
 7. .claude/known-issues.md — exists? how many open items?
 8. .claude/security-findings.md — exists? how many open?
-9. ~/.claude/CLAUDE.md — Phase 0 marker present? which principles?
+9. ~/.claude/CLAUDE.md — global guidelines marker present? which
+   principles?
 10. .gitignore — what's gitignored related to Claude Code?
 
 Post the inventory in chat (compact — 30-40 lines max). The user
@@ -140,7 +151,7 @@ Two paths populate this section:
      internal types — convert at the boundary in src/api/client.ts"
 
 2. **`/ecosystem-review` proposes one.** When you run the skill (set
-   up in Phase 3, if the team chose it), it scans recent commits and
+   up by an earlier phase, if the team chose it), it scans recent commits and
    the codebase for patterns worth recording — recurring corrections,
    non-obvious gotchas, conventions visible in commit messages. It
    surfaces each candidate for your approval before appending the
@@ -174,7 +185,7 @@ to" — they don't get re-flagged by future audits.
 
 ## Ecosystem review and doc maintenance
 
-[Only if /ecosystem-review was set up in Phase 3]
+[Only if /ecosystem-review was set up by an earlier phase]
 
 `/ecosystem-review` is a manually-invoked skill for two related jobs:
 
@@ -262,7 +273,7 @@ settings.json:
 - `permissions.allow / ask / deny` use real tool names (Read, Edit,
   Write, Bash, WebFetch, etc.) and documented rule pattern syntax
   (`Bash(cmd:*)`, `Edit(path/glob)`)
-- If Phase 3 set up agents that write to .claude/known-issues.md:
+- If any agents that write to .claude/known-issues.md exist:
   `Edit(.claude/known-issues.md)` appears in permissions.allow (or no
   rule blocks it). Same for .claude/security-findings.md if the
   security-auditor exists.
@@ -357,8 +368,8 @@ AskUserQuestion with:
 After approval:
 1. Write CONTRIBUTING-AI.md
 2. Apply approved wiring fixes (if any)
-3. Commit: "docs(claude): Phase 5 — CONTRIBUTING-AI.md and wiring validation"
-4. Delete .claude/session/phase-5-plan.md
+3. Commit: "docs(claude): Phase 4 — CONTRIBUTING-AI.md and wiring validation"
+4. Delete .claude/session/phase-4-plan.md
 
 Post a final line in chat:
 
@@ -370,8 +381,10 @@ Next steps for the team:
   known-issues backlog.
 - Use /pr-review on the next 2-3 PRs to refine the code-reviewer's
   checklist; iterate based on what's noisy or missed.
-- Watch for ecosystem-hook noise during the first 1-2 weeks — if the
-  hook flags too aggressively, adjust its prompt threshold.
+- Run /ecosystem-review (if set up) on your usual cadence (weekly or
+  before releases). If it flags too aggressively, say "skip" on noisy
+  findings so its memory learns the team's tolerance, or tighten the
+  relevant invariant check in .claude/agents/ecosystem-reviewer.md.
 - Plan a 2-week retrospective to refine skills and rules based on what
   actually got used vs ignored."
 ````

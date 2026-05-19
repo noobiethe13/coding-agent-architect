@@ -20,7 +20,7 @@ This phase adds structured advanced infrastructure on top of what the built-in `
 ## Prerequisites & Execution
 
 - **Prerequisites:** - `/init CLAUDE_CODE_NEW_INIT=1` must be run on this repository first (or a `CLAUDE.md` must already exist).
-  - The Global Setup (`~/.claude/CLAUDE.md`) must be installed on your machine.
+  - The global behavioral guidelines marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
 - **Token cost:** Medium. Reads the codebase and utilizes 2-3 user-interactive turns via `AskUserQuestion`.
 
 ## The Prompt
@@ -41,12 +41,13 @@ If the marker is missing, post this notice and pause:
 "Heads up: I don't see the global behavioral guidelines installed at
 ~/.claude/CLAUDE.md. Without them, Claude will not
 have universal think-before-coding / simplicity-first / surgical-changes
-guardrails across every session. Recommended: run Phase 0 of core-setup in a separate
-session first, then come back here. Or, if you want to proceed without it
-for now, say 'continue without core-setup'."
+guardrails across every session. Recommended: install the global
+behavioral guidelines in a separate session first, then come back here.
+Or, if you want to proceed without them for now, say 'continue without
+the global guidelines'."
 
-Wait for user response. If they install Phase 0 of core-setup and return, re-check the
-marker before proceeding. If they say continue, proceed.
+Wait for user response. If they install the guidelines and return,
+re-check the marker before proceeding. If they say continue, proceed.
 
 Step 2: Locate the project CLAUDE.md. Check (in this order):
   - ./CLAUDE.md
@@ -145,7 +146,7 @@ AskUserQuestion with:
         },
         {
           label: "Track for remediation",
-          preview: "**Added to .claude/known-issues.md** (the persistent backlog set up in Phase 3). The /remediate command (also set up in Phase 3) will work through these items one at a time, with state lifecycle (open/in-progress/fixed/accepted/deferred).\n\n[brief restatement and a short suggested remediation approach]"
+          preview: "**Added to .claude/known-issues.md** (the persistent backlog scaffolded in this phase). The /remediate command (set up by a later phase) will work through these items one at a time, with state lifecycle (open/in-progress/fixed/accepted/deferred).\n\n[brief restatement and a short suggested remediation approach]"
         },
         {
           label: "Skip — not actually a concern",
@@ -172,8 +173,8 @@ Synthesize what you'll add to CLAUDE.md. The plan covers four areas:
    line here so it doesn't happen again. Add entries as factual statements,
    not narrative. Keep entries concise.
 
-   The `/ecosystem-review` skill (set up in Phase 2 if the team selected
-   it) may also propose entries when run — it spots patterns worth
+   The `/ecosystem-review` skill (if a later phase set it up) may also
+   propose entries when run — it spots patterns worth
    recording (a recurring correction across recent commits, a non-obvious
    gotcha visible in the codebase). Claude surfaces those proposals to
    you for approval before appending; nothing lands in this section
@@ -189,10 +190,12 @@ Synthesize what you'll add to CLAUDE.md. The plan covers four areas:
 
 3. **Files to be written by later phases that go into intermediate session
    storage**:
-   - `.claude/session/findings.md` — option (b) red flags. Phase 2 (custom
-     skills) will consume this when designing the code-review skill.
+   - `.claude/session/findings.md` — option (b) red flags. A later phase
+     will consume this when designing the code-reviewer agent / /pr-review
+     skill.
    - `.claude/known-issues.md` (committed file at project root) — option (c)
-     red flags. Phase 3 sets up the /remediate workflow that consumes this.
+     red flags. A later phase sets up the /remediate workflow that consumes
+     this.
 
 4. **Index section in CLAUDE.md** — placeholder for skills and agents that
    later phases will populate. Looks like:
@@ -201,16 +204,16 @@ Synthesize what you'll add to CLAUDE.md. The plan covers four areas:
    ## Skills available in this project
 
    <!-- This section can be kept current by occasional /ecosystem-review
-        runs (set up in Phase 2, if the team chose it). It lists the
-        skills in .claude/skills/ and their purpose. -->
+        runs (if a later phase set it up). It lists the skills in
+        .claude/skills/ and their purpose. -->
 
-   _No skills yet — populated in Phase 1 and Phase 2._
+   _No skills yet — populated by later setup phases._
 
    ## Agents available in this project
 
    <!-- Same as above — auto-maintained. -->
 
-   _No agents yet — populated in Phase 2._
+   _No agents yet — populated by later setup phases._
    ```
 
 Show this plan via AskUserQuestion's `preview` field, NOT as separate chat
@@ -267,8 +270,8 @@ Write the changes:
    ```
    # Setup Findings — for next phases to consume
    #
-   # Phase 2 (custom skills) reads this and incorporates into the
-   # code-review skill. After Phase 2 implements, this file is deleted.
+   # A later phase reads this and incorporates the findings into the
+   # code-reviewer agent / /pr-review skill, then deletes this file.
 
    ## Red flags marked for code-review skill (option b)
    - [path or pattern]: [description of the issue]
@@ -283,7 +286,8 @@ Write the changes:
    # Known Issues — Remediation Backlog
    #
    # This file tracks codebase issues that are known but not yet fixed.
-   # Use /remediate (set up in Phase 3) to work through these one at a time.
+   # Use /remediate (set up by a later phase) to work through these one
+   # at a time.
    #
    # States: open | in-progress | fixed | accepted | deferred
 
@@ -291,14 +295,14 @@ Write the changes:
 
    ## ISSUE-001: [Short title]
    **State**: open
-   **Identified**: YYYY-MM-DD (Phase 0 setup)
+   **Identified**: YYYY-MM-DD (initial setup)
    **Path**: [file path or pattern]
    **Issue**: [what's wrong, 1-3 sentences]
    **Suggested approach**: [remediation idea, may be multi-session]
    ```
 
-   When appending new issues later (Phase 2, /audit runs), use the next
-   available ISSUE-NNN identifier.
+   When appending new issues later (e.g., from future /audit runs), use
+   the next available ISSUE-NNN identifier.
 
 4. Commit the changes with a clear message: "chore(claude): Phase 0 —
    augment CLAUDE.md with Lessons Learned, structural notes, and indexes".
@@ -306,11 +310,10 @@ Write the changes:
 5. Delete .claude/session/phase-0-plan.md if it exists (the plan-file
    scaffolding is no longer needed; the git commit is the audit trail).
 
-   Note: keep findings.md — Phase 2 will consume and delete it. Keep
-   known-issues.md — it's a permanent committed file.
+   Note: keep findings.md — a later phase will consume and delete it.
+   Keep known-issues.md — it's a permanent committed file.
 
 6. Post a final line in chat:
-   "Phase 0 complete — CLAUDE.md augmented. Next: Phase 1 (knowledge skills
-   & path-scoped rules) or Phase 2 (specialist agents & workflow skills),
-   depending on what your project needs."
+   "Phase 0 complete — CLAUDE.md augmented. You can now run the next
+   setup phase whenever you're ready."
 ````

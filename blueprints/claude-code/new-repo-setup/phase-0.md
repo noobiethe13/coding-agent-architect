@@ -19,7 +19,7 @@ This Bootstrap phase captures your project intent *before* you run `/init`. It s
 
 - **When to use:** Use this *only* if the repository is empty or near-empty (no manifest files, no source code). If the repo has substantive existing code, skip this entirely and use the **Existing Repo Setup** path.
 - **Execution Order:** You must run this prompt **BEFORE** running `/init`. 
-- **Next Steps:** After running this, you will run `/init CLAUDE_CODE_NEW_INIT=1`, and then jump over to **Phase 0** of the existing-repo-setup.
+- **Next Steps:** After running this, run `/init CLAUDE_CODE_NEW_INIT=1`, then continue with the existing-repo-setup phases in order.
 - **Token cost:** Low. One reading pass and one `AskUserQuestion` interaction.
 
 ## The Prompt
@@ -51,7 +51,7 @@ populated, git log non-trivial), post:
 right starting point — Bootstrap is optimized for empty repos. I
 recommend:
 1. Run /init CLAUDE_CODE_NEW_INIT=1 directly (no Bootstrap needed)
-2. Then run Phase 0 of existing-repo-setup
+2. Then continue with the existing-repo-setup phases in order
 
 Want to proceed that way?"
 
@@ -102,11 +102,11 @@ AskUserQuestion with:
       options: [
         {
           label: "/feature — multi-session feature implementation",
-          preview: "**Multi-session feature work.** Uses the 3-file session continuity pattern (plan.md / context.md / tasks.md) so feature work survives across separate Claude Code sessions. Useful for any project where features take more than a single sitting.\n\nProperly set up in Phase 3 of the existing-repo-setup phases — for now, mentioning it lets /init scaffold the basics."
+          preview: "**Multi-session feature work.** Uses the 3-file session continuity pattern (plan.md / context.md / tasks.md) so feature work survives across separate Claude Code sessions. Useful for any project where features take more than a single sitting.\n\nProperly set up by a later phase — for now, mentioning it lets /init scaffold the basics."
         },
         {
           label: "/audit + /remediate — quality backlog workflow",
-          preview: "**Quality backlog.** /audit does deep codebase analysis (architectural violations, anti-patterns, complexity, dead code) and populates `.claude/known-issues.md`. /remediate works through findings one item at a time with a state lifecycle (open → in-progress → fixed/accepted/deferred).\n\nProperly set up in Phase 2 of existing-repo-setup — but flagging now means /init won't propose duplicate /simplify-style skills."
+          preview: "**Quality backlog.** /audit does deep codebase analysis (architectural violations, anti-patterns, complexity, dead code) and populates `.claude/known-issues.md`. /remediate works through findings one item at a time with a state lifecycle (open → in-progress → fixed/accepted/deferred).\n\nProperly set up by a later phase — but flagging now means /init won't propose duplicate /simplify-style skills."
         },
         {
           label: "/security-audit — codebase security backlog",
@@ -114,11 +114,11 @@ AskUserQuestion with:
         },
         {
           label: "/pr-review — project-aware PR review",
-          preview: "**Project-aware PR review.** Built-in /review is deprecated (replaced by plugin) and is generic. /pr-review is project-specific: knows your architecture, conventions, and known-issues backlog (so it doesn't re-flag triaged stuff).\n\nProperly set up in Phase 2 of existing-repo-setup."
+          preview: "**Project-aware PR review.** Built-in /review is deprecated (replaced by plugin) and is generic. /pr-review is project-specific: knows your architecture, conventions, and known-issues backlog (so it doesn't re-flag triaged stuff).\n\nProperly set up by a later phase."
         },
         {
           label: "/ecosystem-review — drift review and doc maintenance",
-          preview: "**Ecosystem reviewer.** Manually-invoked skill with two modes:\n\n- *Drift review* (no argument): scans `.claude/`, CLAUDE.md, CONTRIBUTING-AI.md, backlog files, and project docs (README, CHANGELOG, ARCHITECTURE, CONTRIBUTING, LICENSE, ADRs, `docs/`). Surfaces redundancy, orphans, gaps, sync issues, stale content, and Lessons Learned candidates for your approval. Applies approved fixes and commits.\n\n- *Doc creation* (argument is a doc description): creates new project docs — README, CONTRIBUTING, LICENSE, ARCHITECTURE, ADRs, feature docs, custom docs. Reads relevant codebase context, proposes a draft, writes after approval. For LICENSE, uses canonical license text, never synthesized.\n\nProperly set up in Phase 2 of existing-repo-setup. Useful for any project that will accumulate docs over time."
+          preview: "**Ecosystem reviewer.** Manually-invoked skill with two modes:\n\n- *Drift review* (no argument): scans `.claude/`, CLAUDE.md, CONTRIBUTING-AI.md, backlog files, and project docs (README, CHANGELOG, ARCHITECTURE, CONTRIBUTING, LICENSE, ADRs, `docs/`). Surfaces redundancy, orphans, gaps, sync issues, stale content, and Lessons Learned candidates for your approval. Applies approved fixes and commits.\n\n- *Doc creation* (argument is a doc description): creates new project docs — README, CONTRIBUTING, LICENSE, ARCHITECTURE, ADRs, feature docs, custom docs. Reads relevant codebase context, proposes a draft, writes after approval. For LICENSE, uses canonical license text, never synthesized.\n\nProperly set up by a later phase. Useful for any project that will accumulate docs over time."
         },
         {
           label: "/rca — root-cause investigation",
@@ -126,7 +126,7 @@ AskUserQuestion with:
         },
         {
           label: "Skip — let /init propose what fits",
-          preview: "Don't pre-suggest workflow skills. /init's exploration + gap-fill interview will propose what makes sense based on the project. You can add structured skills later via Phase 2 of existing-repo-setup."
+          preview: "Don't pre-suggest workflow skills. /init's exploration + gap-fill interview will propose what makes sense based on the project. You can add structured skills later via the existing-repo-setup phases."
         }
       ]
     }
@@ -198,7 +198,8 @@ and roles? Anything that affects how Claude should approach work.]
   available immediately.
 - DO NOT propose /audit, /remediate, /security-audit duplicates of
   bundled built-ins. The proper agents and infrastructure will be set
-  up in Phases 2-3 of the existing-repo-setup phases. /init's role is just to acknowledge the slot.
+  up by later existing-repo-setup phases. /init's role is just to
+  acknowledge the slot.
 ```
 
 Self-critique:
@@ -250,17 +251,16 @@ Next steps:
    'Read .claude/session/project-intent.md for project context. Consider
    the workflow skills listed there as candidates for the skill setup.'
 
-2. Then Phase 0 (CLAUDE.md augmentation) through Phase 4 (CONTRIBUTING-AI.md
-   and wiring validation) of existing-repo-setup, in order.
+2. Then run the existing-repo-setup phases in order.
 
 You can pause between any of these — each phase is a separate session
-and reads what the previous phase committed."
+and reads what previous phases committed."
 
 Note: do NOT auto-invoke /init. Built-in commands have their own
 interactive flow; let the user run /init explicitly so they engage with
 its AskUserQuestion prompts directly.
 
 This prompt does not delete project-intent.md. /init reads it; subsequent
-phases may also reference it. Phase 4 of existing-repo-setup (or the user) can decide to delete
-it later.
+phases may also reference it. A later phase or the user can decide to
+delete it once setup is complete.
 ````

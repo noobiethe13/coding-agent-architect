@@ -18,8 +18,8 @@ This phase adds reference-knowledge content that loads intelligently rather than
 
 ## Prerequisites & Execution
 
-- **Prerequisites:** - Phase 0 of core-setup marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
-  - Phase 0 of existing-repo-setup outputs (Lessons Learned and index sections) must exist in the project `CLAUDE.md`.
+- **Prerequisites:** - The global behavioral guidelines marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
+  - The project `CLAUDE.md` must contain Lessons Learned and skills/agents index sections (set up by an earlier phase).
 - **When to skip:** If the built-in `/init` command already produced all the skills and rules your team needs, you can skip this phase.
 - **Token cost:** Medium-high. Reads the codebase and relies heavily on interactive `AskUserQuestion` menus.
 
@@ -35,22 +35,33 @@ asked for.
 
 PRE-FLIGHT — VERIFY PREREQUISITES
 
-Step 1: Phase 0 of core-setup marker check at ~/.claude/CLAUDE.md. If the marker is missing, post this notice and pause:
+Step 1: Global behavioral guidelines marker check at ~/.claude/CLAUDE.md.
+If the marker `# CLAUDE-PROMPTS-PHASE-0-INSTALLED` is missing, post this
+notice and pause:
 
 "Heads up: I don't see the global behavioral guidelines installed at
-~/.claude/CLAUDE.md. Without them, Claude will not
-have universal think-before-coding / simplicity-first / surgical-changes
-guardrails across every session. Recommended: run Phase 0 of core-setup in a separate
-session first, then come back here. Or, if you want to proceed without it
-for now, say 'continue without core-setup'."
+~/.claude/CLAUDE.md. Without them, Claude will not have universal
+think-before-coding / simplicity-first / surgical-changes guardrails
+across every session. Recommended: install the global guidelines in a
+separate session first, then come back here. Or, if you want to proceed
+without them for now, say 'continue without the global guidelines'."
 
-Wait for user response. If they install Phase 0 of core-setup and return, re-check the
-marker before proceeding. If they say continue, proceed.
+Wait for user response. If they install the guidelines and return,
+re-check the marker before proceeding. If they say continue, proceed.
 
-Step 2: Phase 0 of existing-repo-setup outputs check. CLAUDE.md should have the Lessons Learned
-and indexes sections from Phase 0 of existing-repo-setup. If they're missing, post:
+Step 2: Project CLAUDE.md augmentation check. Look at ./CLAUDE.md (or
+./.claude/CLAUDE.md). It should contain three sections an earlier setup
+phase adds:
+- a `## Lessons Learned` heading (the accumulating-corrections section)
+- a `## Skills available in this project` heading (skills index)
+- a `## Agents available in this project` heading (agents index)
 
-"Phase 0 of existing-repo-setup outputs are missing from CLAUDE.md. Run Phase 0 of existing-repo-setup first, then return here. Or, if you want to proceed without it, say 'continue without Phase 0 of existing-repo-setup'."
+If any of these headings are missing, post:
+
+"The project CLAUDE.md is missing the augmentation sections (Lessons
+Learned, Skills available, Agents available). Run the CLAUDE.md
+augmentation phase first, then come back here. Or, if you want to
+proceed without it, say 'continue without the augmentation'."
 
 Wait for user response.
 
@@ -77,11 +88,12 @@ Read what /init (or prior work) already produced:
   and note name, description, and a one-line summary
 - List .claude/rules/ contents — same
 - Note skills referenced from CLAUDE.md indexes
-- Note .claude/session/findings.md if it exists (Phase 0 of existing-repo-setup's red-flag findings
-  for option b — these will inform proposed skills)
+- Note .claude/session/findings.md if it exists (red-flag findings from
+  an earlier setup phase, marked for the code-review skill — these will
+  inform proposed skills)
 
 Post a brief inventory in chat (no proposals yet):
-"Existing skills: [list]. Existing rules: [list]. Findings.md from Phase 0 of existing-repo-setup:
+"Existing skills: [list]. Existing rules: [list]. Red-flag findings.md:
 [summary or 'none']. Ready to discuss what to add."
 
 TURN 2 — ELICIT WHAT THE TEAM NEEDS
@@ -241,10 +253,10 @@ examples from the actual codebase referenced by path.]
 ...
 ```
 
-When findings.md from Phase 0 of existing-repo-setup exists, incorporate option-(b) red flags into
-the proposed code-review skill draft (or note them as candidates if no
-code-review skill is being proposed in this phase — they'll be picked up
-when that skill is set up in Phase 2).
+When findings.md from an earlier red-flag review exists, incorporate
+option-(b) red flags into the proposed code-review skill draft (or note
+them as candidates if no code-review skill is being proposed in this
+phase — they'll be picked up when that skill is set up by a later phase).
 
 Self-critique before showing the proposal:
   - For each proposed skill: does this duplicate a bundled skill? (/simplify,
@@ -313,8 +325,8 @@ Optional fields to consider per-skill:
 
 Do NOT use these unless genuinely needed:
 - `disable-model-invocation` — only for workflow skills with side effects
-  (this phase is about knowledge skills; that flag belongs to Phase 2
-  workflow skills)
+  (this phase is about knowledge skills; that flag belongs to workflow
+  skills set up by a later phase)
 - `context: fork` — only when the skill should run in an isolated subagent
 - `arguments` / `argument-hint` — only for parameterized skills
 
@@ -329,17 +341,18 @@ With YAML frontmatter (required: `description`; optional: `paths`).
 After writing all files:
 
 1. Update CLAUDE.md's "Skills available in this project" and "Agents
-   available in this project" indexes (Phase 0 of existing-repo-setup left them as placeholders)
-   to list the newly-created skills. Keep entries to one line each:
-   `- /skill-name — short purpose`. (Agents are populated in Phase 2.)
+   available in this project" indexes (left as placeholders by an
+   earlier phase) to list the newly-created skills. Keep entries to one
+   line each: `- /skill-name — short purpose`. (Agents are populated by
+   a later phase.)
 
-   The /ecosystem-review skill (if set up in Phase 2) can keep this index
-   current going forward. For now, just write the current state.
+   The /ecosystem-review skill (if set up by a later phase) can keep this
+   index current going forward. For now, just write the current state.
 
 2. If findings.md was incorporated into a code-review skill that was
    proposed and approved, delete .claude/session/findings.md.
-   If findings.md was NOT consumed (e.g., user deferred code-review skill
-   to Phase 2), keep findings.md so Phase 2 can read it.
+   If findings.md was NOT consumed (e.g., user deferred the code-review
+   skill), keep findings.md so a later phase can read it.
 
 3. Commit with a clear message: "chore(claude): Phase 1 — add knowledge
    skills and path-scoped rules". Use multi-line commit body listing each
@@ -348,7 +361,6 @@ After writing all files:
 4. Delete .claude/session/phase-1-plan.md if you wrote one.
 
 5. Post a final line in chat:
-   "Phase 1 complete — added [N] skills and [M] rules. Next: Phase 2
-   (specialist agents & workflow skills) for /audit, /remediate, /pr-review,
-   etc., or Phase 3 if you want to skip custom agents."
+   "Phase 1 complete — added [N] skills and [M] rules. You can now run
+   the next setup phase whenever you're ready."
 ````

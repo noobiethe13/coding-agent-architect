@@ -1,5 +1,5 @@
 ---
-title: "Phase 4: Multi-Session Continuity Infrastructure"
+title: "Phase 3: Multi-Session Continuity Infrastructure"
 description: "Sets up the universal session skill (3-file pattern), backlog file scaffolding, and gitignore entries for multi-session work."
 tool: "claude-code"
 type: "setup"
@@ -14,17 +14,17 @@ tags: ["existing-repo", "session-continuity", "backlog", "permissions"]
 This phase sets up the infrastructure that lets multi-session work survive across separate Claude Code sessions. It creates a universal `session` skill that defines the 3-file pattern (`plan.md`, `context.md`, `tasks.md` in `.claude/session/`). This pattern is used for any long-running task, such as feature work, multi-session remediation, complex bug investigation, or architectural overhauls.
 
 Additionally, this phase:
-- Scaffolds the backlog files (`.claude/known-issues.md`, `.claude/security-findings.md`) if Phase 3 set up agents that need them.
+- Scaffolds the backlog files (`.claude/known-issues.md`, `.claude/security-findings.md`) if an earlier phase set up agents that need them.
 - Ensures `.gitignore` covers session working state.
 - Scaffolds `.claude/settings.json` permissions based on a selected profile.
 
-*Note: This phase does NOT set up an automatic ecosystem hook. Ecosystem health is handled by the manually invoked `/ecosystem-review` skill set up in Phase 3.*
+*Note: This phase does NOT set up an automatic ecosystem hook. Ecosystem health is handled by the manually invoked `/ecosystem-review` skill (if set up by an earlier phase).*
 
 ## Prerequisites & Execution
 
-- **Prerequisites:** - Phase 0 marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
-  - Phase 1 outputs (Lessons Learned and index sections) must exist in the project `CLAUDE.md`.
-  - Depending on what Phase 2/3 produced, this prompt will dynamically scaffold the necessary backlog files.
+- **Prerequisites:** - The global behavioral guidelines marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
+  - The project `CLAUDE.md` must contain Lessons Learned and skills/agents index sections (set up by an earlier phase).
+  - Depending on what earlier phases produced, this prompt will dynamically scaffold the necessary backlog files.
 - **Token cost:** Low-medium. Mostly file construction and one `AskUserQuestion` for approval.
 
 ## The Prompt
@@ -38,12 +38,20 @@ scaffolding, and a .gitignore entry for session working state.
 
 PRE-FLIGHT — VERIFY PREREQUISITES
 
-- Phase 0 marker check
-- Phase 1 outputs in CLAUDE.md
-- Note what Phase 2/3 produced (skills, agents, rules) — informs the
-  inventory and any backlog files that need scaffolding
+- Read ~/.claude/CLAUDE.md and confirm the marker
+  `# CLAUDE-PROMPTS-PHASE-0-INSTALLED` is present (universal behavioral
+  guidelines installed at User-level CLAUDE.md).
+- Read the project CLAUDE.md (./CLAUDE.md or ./.claude/CLAUDE.md) and
+  confirm it contains the headings `## Lessons Learned`,
+  `## Skills available in this project`, and
+  `## Agents available in this project` (added by an earlier setup phase).
+- List .claude/skills/, .claude/agents/, and .claude/rules/ to note what
+  earlier phases produced — this informs the inventory and which backlog
+  files need scaffolding.
 
-If prerequisites are missing, surface a clear notice and pause.
+If either of the first two checks fails, surface a clear notice
+describing what's missing and pause for user direction (offer to proceed
+without it, or to install the missing piece first).
 
 SELF-VERIFICATION
 
@@ -62,9 +70,10 @@ Read existing setup:
 - .claude/skills/session/SKILL.md — does session skill already exist
   (e.g., from /init)? If yes, you'll augment, not replace.
 - .gitignore — does it already gitignore .claude/session/?
-- .claude/known-issues.md — exists? (Created in Phase 1 or 3 typically.)
+- .claude/known-issues.md — exists? (Typically created by an earlier
+  CLAUDE.md augmentation phase or by /audit if available.)
 - .claude/security-findings.md — exists? (Created if security-auditor
-  was set up in Phase 3.)
+  was set up by an earlier phase.)
 - .claude/agents/ contents — note which agents exist; informs whether
   backlog files need scaffolding (e.g., security-findings.md only
   needed if security-auditor exists)
@@ -193,11 +202,33 @@ also add `.claude/agent-memory-local/` here. Default: agent memory at
 Component 3: Backlog file scaffolding
 
 If .claude/known-issues.md already exists, leave it alone. If it doesn't
-and the quality pair was set up in Phase 3, create it now with the
-documented format from Phase 1.
+and a quality pair (auditor + remediator) exists in `.claude/agents/`,
+create it now with this format:
 
-If .claude/security-findings.md doesn't exist and security-auditor was
-set up in Phase 3, create:
+```
+# Known Issues — Remediation Backlog
+#
+# This file tracks codebase issues that are known but not yet fixed.
+# Use /remediate (if available) to work through these one at a time.
+#
+# States: open | in-progress | fixed | accepted | deferred
+
+---
+
+## ISSUE-001: [Short title]
+**State**: open
+**Identified**: YYYY-MM-DD (initial scaffold)
+**Path**: [file path or pattern]
+**Issue**: [what's wrong, 1-3 sentences]
+**Suggested approach**: [remediation idea, may be multi-session]
+```
+
+(Leave the file with only the header and no ISSUE entries if there are
+no existing issues to seed — the auditor agent will append entries later
+using the next available ISSUE-NNN identifier.)
+
+If .claude/security-findings.md doesn't exist and a security-auditor was
+set up by an earlier phase, create:
 
 `.claude/security-findings.md`:
 
@@ -254,9 +285,9 @@ VERIFY against current docs before writing — the schema may have evolved:
   changed
 - Confirm precedence: deny > allow > ask > defaultMode fallback
 
-Example output for Standard profile, post-Phase 3 with quality + security
-pair both enabled and memory-on agents (auditor's backlog write needs
-explicit allow since auditor doesn't have memory):
+Example output for Standard profile, assuming the quality + security
+pair are both enabled with memory-on agents (auditor's backlog write
+needs explicit allow since auditor doesn't have memory):
 
 ```json
 {
@@ -294,8 +325,8 @@ explicit allow since auditor doesn't have memory):
 
 If .claude/settings.json already exists, do NOT overwrite. Read it,
 diff against the proposed profile-derived rules, and surface the
-*additions* needed for the agents set up in Phase 3 to work without
-prompts. The user reviews and applies.
+*additions* needed for any specialist agents already set up to work
+without prompts. The user reviews and applies.
 
 `.claude/settings.local.json` is the personal-overrides file (gitignored).
 Don't write it unless asked — but DO add it to .gitignore in Component 2
@@ -310,8 +341,9 @@ SELF-CRITIQUE BEFORE PRESENTING
 - .gitignore: doesn't gitignore committed files (.claude/known-issues.md
   and .claude/security-findings.md should NOT be gitignored — they're
   shared team backlog)?
-- No reference to a Phase 4 ecosystem hook anywhere in the components
-  (the hook was discarded in favor of /ecosystem-review in Phase 3)?
+- No reference to an automatic ecosystem hook anywhere in the components
+  (ecosystem health is handled by the manually invoked /ecosystem-review
+  skill, not by a hook)?
 
 TURN 3 — REVIEW AND APPROVE
 
@@ -330,7 +362,7 @@ AskUserQuestion with:
         },
         {
           label: "Minimal",
-          preview: "**Minimal**\n\nJust the allow entries needed so the agents set up in Phase 3 can write to their backlog/memory/session files without prompts. No ask/deny rules. Use when your environment is already trusted (or has external sandboxing)."
+          preview: "**Minimal**\n\nJust the allow entries needed so any specialist agents already set up can write to their backlog/memory/session files without prompts. No ask/deny rules. Use when your environment is already trusted (or has external sandboxing)."
         },
         {
           label: "Strict",
@@ -343,13 +375,13 @@ AskUserQuestion with:
       ]
     },
     {
-      question: "Apply Phase 4 components?",
+      question: "Apply Phase 3 components?",
       header: "Apply",
       multiSelect: false,
       options: [
         {
           label: "Apply all as proposed",
-          preview: "[Compact preview: list of files being created/modified — session skill, .gitignore entries, any backlog file scaffolding needed based on Phase 3 agents, settings.json per the profile picked above.]"
+          preview: "[Compact preview: list of files being created/modified — session skill, .gitignore entries, any backlog file scaffolding needed based on agents already in .claude/agents/, settings.json per the profile picked above.]"
         },
         {
           label: "Apply session skill only — skip backlog & settings scaffolding",
@@ -361,7 +393,7 @@ AskUserQuestion with:
         },
         {
           label: "Skip this phase",
-          preview: "Don't install Phase 4 infrastructure. You can run this phase later if needs grow."
+          preview: "Don't install Phase 3 infrastructure. You can run this phase later if needs grow."
         }
       ]
     }
@@ -372,13 +404,13 @@ TURN 4 — IMPLEMENT (after approval)
 Write all approved components. Update CLAUDE.md "Skills available"
 index to include `session` if newly created.
 
-Commit with message: "feat(claude): Phase 4 — session continuity
+Commit with message: "feat(claude): Phase 3 — session continuity
 infrastructure". Multi-line body listing each file.
 
-Delete .claude/session/phase-4-plan.md if you wrote one.
+Delete .claude/session/phase-3-plan.md if you wrote one.
 
 Post a final line in chat:
-"Phase 4 complete — session continuity skill, backlog scaffolding, and
-.gitignore in place. Next: Phase 5 (CONTRIBUTING-AI.md and wiring
-validation) to close out the setup."
+"Phase 3 complete — session continuity skill, backlog scaffolding, and
+.gitignore in place. You can now run the next setup phase whenever
+you're ready."
 ````

@@ -21,9 +21,9 @@ It provides soft-nudge candidates that you can choose from, or you can describe 
 
 ## Prerequisites & Execution
 
-- **Prerequisites:** - Phase 0 of core-setup marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
-  - Phase 0 of existing-repo-setup outputs (Lessons Learned and index sections) must exist in the project `CLAUDE.md`.
-  - *(Note: Phase 1 is optional. If it ran, this phase will augment its outputs, not replace them).*
+- **Prerequisites:** - The global behavioral guidelines marker (`# CLAUDE-PROMPTS-PHASE-0-INSTALLED`) must exist in `~/.claude/CLAUDE.md`.
+  - The project `CLAUDE.md` must contain Lessons Learned and skills/agents index sections (set up by an earlier phase).
+  - *(Note: any earlier knowledge-skills phase is optional. If it ran, this phase will augment its outputs, not replace them).*
 - **Token cost:** High. This is the most reasoning-heavy phase. It reads the codebase, utilizes multiple `AskUserQuestion` interactions, and drafts complex frontmatter for each selected agent and skill.
 
 ## The Prompt
@@ -38,13 +38,26 @@ skills are how the user invokes them via /skill-name.
 
 PRE-FLIGHT — VERIFY PREREQUISITES
 
-Step 1: Phase 0 marker check at ~/.claude/CLAUDE.md.
-Step 2: Phase 1 outputs check (CLAUDE.md has Lessons Learned and indexes).
-Step 3: Phase 2 may or may not have run. Note what skills/rules already
-exist; this phase will add to them, not replace.
+Step 1: Read ~/.claude/CLAUDE.md and confirm the marker
+`# CLAUDE-PROMPTS-PHASE-0-INSTALLED` is present. This marker indicates
+the universal behavioral guidelines (think-before-coding, simplicity-
+first, surgical-changes, etc.) are installed at the User-level
+CLAUDE.md.
 
-If any prerequisite is missing, surface a clear notice and pause for user
-direction.
+Step 2: Read the project CLAUDE.md (./CLAUDE.md or ./.claude/CLAUDE.md)
+and confirm it contains these three headings (added by an earlier
+setup phase):
+- `## Lessons Learned`
+- `## Skills available in this project`
+- `## Agents available in this project`
+
+Step 3: List .claude/skills/ and .claude/rules/. A previous setup phase
+may or may not have already added knowledge skills and path-scoped rules
+here. Note what exists; this phase will add to them, not replace.
+
+If Step 1 or Step 2 fails, surface a clear notice describing what's
+missing and pause for user direction (offer to proceed without it, or
+to install the missing piece first).
 
 SELF-VERIFICATION
 
@@ -111,7 +124,7 @@ AskUserQuestion with:
         },
         {
           label: "PR reviewer + /pr-review",
-          preview: "**Project-aware PR reviewer**\n\nBuilt-in /review is deprecated (replaced by plugin) and is generic. /pr-review uses a project-specific code-reviewer agent that knows:\n- Your architecture from CLAUDE.md\n- Your team's PR conventions from CLAUDE.md\n- The known-issues backlog (so it doesn't re-flag triaged stuff)\n- Project-specific patterns and anti-patterns from .claude/rules/\n\nIf .claude/session/findings.md exists from Phase 0, the option-(b) red flags get incorporated into the reviewer's checklist."
+          preview: "**Project-aware PR reviewer**\n\nBuilt-in /review is deprecated (replaced by plugin) and is generic. /pr-review uses a project-specific code-reviewer agent that knows:\n- Your architecture from CLAUDE.md\n- Your team's PR conventions from CLAUDE.md\n- The known-issues backlog (so it doesn't re-flag triaged stuff)\n- Project-specific patterns and anti-patterns from .claude/rules/\n\nIf .claude/session/findings.md exists from an earlier red-flag review, the option-(b) red flags get incorporated into the reviewer's checklist."
         },
         {
           label: "Bug investigator + /rca",
@@ -119,7 +132,7 @@ AskUserQuestion with:
         },
         {
           label: "None of these",
-          preview: "Skip the quality/review cluster. /init's setup + bundled /simplify + built-in /security-review may be sufficient. You can come back to Phase 2 later if needs grow."
+          preview: "Skip the quality/review cluster. /init's setup + bundled /simplify + built-in /security-review may be sufficient. You can come back to this phase later if needs grow."
         }
       ]
     },
@@ -138,11 +151,11 @@ AskUserQuestion with:
         },
         {
           label: "Feature implementer skill (multi-session)",
-          preview: "**Feature implementer**\n\nA workflow skill for multi-session feature work. Uses the 3-file session continuity pattern (plan.md / context.md / tasks.md in .claude/session/) so feature work survives across separate Claude Code sessions.\n\nFlow: takes a feature description, creates the 3 files, plans the work in chunks, executes one chunk per session, updates context as it goes, marks tasks done as it completes them.\n\nThe session continuity infrastructure itself is set up in Phase 3 — this option just adds the /feature skill that uses it. Not strictly necessary if /init already created a /feature skill."
+          preview: "**Feature implementer**\n\nA workflow skill for multi-session feature work. Uses the 3-file session continuity pattern (plan.md / context.md / tasks.md in .claude/session/) so feature work survives across separate Claude Code sessions.\n\nFlow: takes a feature description, creates the 3 files, plans the work in chunks, executes one chunk per session, updates context as it goes, marks tasks done as it completes them.\n\nThe session continuity infrastructure itself is set up by a later phase — this option just adds the /feature skill that uses it. Not strictly necessary if /init already created a /feature skill."
         },
         {
           label: "None of these",
-          preview: "Skip the security/ecosystem cluster. You can come back to Phase 2 later if needs grow."
+          preview: "Skip the security/ecosystem cluster. You can come back to this phase later if needs grow."
         }
       ]
     },
@@ -400,7 +413,7 @@ You remediate quality issues from .claude/known-issues.md one at a time.
 [Detailed system prompt with phase structure for: pick item, propose
 remediation plan, execute after approval, verify, update state, get
 confirmation before removing. Multi-session items use the 3-file session
-continuity pattern from Phase 3.]
+continuity pattern set up by a later phase.]
 
 [Includes self-critique: "would a senior engineer approve this fix as
 production-ready?" before declaring done.]
@@ -771,7 +784,28 @@ created, incorporate the option-(b) red flags into the code-reviewer's
 project-specific checklist (in its body), then delete findings.md.
 
 If .claude/known-issues.md doesn't yet exist and the quality pair was
-created, create it with the format described in Phase 0.
+created, scaffold it with this format:
+
+```
+# Known Issues — Remediation Backlog
+#
+# This file tracks codebase issues that are known but not yet fixed.
+# Use /remediate to work through these one at a time.
+#
+# States: open | in-progress | fixed | accepted | deferred
+
+---
+
+## ISSUE-001: [Short title]
+**State**: open
+**Identified**: YYYY-MM-DD
+**Path**: [file path or pattern]
+**Issue**: [what's wrong, 1-3 sentences]
+**Suggested approach**: [remediation idea, may be multi-session]
+```
+
+Leave the file with only the header if there are no issues to seed —
+the auditor agent populates it on its first /audit run.
 
 Commit with a clear message: "feat(claude): Phase 2 — add specialist
 agents and workflow skills". Multi-line commit body listing each file.
@@ -779,7 +813,6 @@ agents and workflow skills". Multi-line commit body listing each file.
 Delete .claude/session/phase-2-plan.md.
 
 Post a final line in chat:
-"Phase 2 complete — added [N] agents and [M] workflow skills. Next:
-Phase 3 (multi-session continuity) to wire up the session-continuity
-skill, backlog scaffolding, and .gitignore."
+"Phase 2 complete — added [N] agents and [M] workflow skills. You can
+now run the next setup phase whenever you're ready."
 ````

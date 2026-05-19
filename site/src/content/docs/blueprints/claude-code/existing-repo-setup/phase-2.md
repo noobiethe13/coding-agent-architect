@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["existing-repo", "agents", "skills", "workflows"]
 ---
 
-## Overview
+## What this does
 
 This phase adds specialist subagents (which run in a separate context window with persistent memory and isolated tools) and their paired workflow skills (the slash commands you invoke). 
 

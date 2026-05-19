@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["new-repo", "bootstrap", "intent-capture"]
 ---
 
-## Overview
+## What this does
 
 The built-in `/init` command is optimized for exploring existing code. In an empty repository, there is nothing to explore, so it relies heavily on a gap-fill interview. 
 

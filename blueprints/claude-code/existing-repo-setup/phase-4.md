@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["existing-repo", "documentation", "validation", "onboarding"]
 ---
 
-## Overview
+## What this does
 
 This phase performs two final tasks to close out your Claude Code setup:
 

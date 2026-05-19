@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["existing-repo", "session-continuity", "backlog", "permissions"]
 ---
 
-## Overview
+## What this does
 
 This phase sets up the infrastructure that lets multi-session work survive across separate Claude Code sessions. It creates a universal `session` skill that defines the 3-file pattern (`plan.md`, `context.md`, `tasks.md` in `.claude/session/`). This pattern is used for any long-running task, such as feature work, multi-session remediation, complex bug investigation, or architectural overhauls.
 

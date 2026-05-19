@@ -2,6 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Heading that Starlight auto-generates as the first TOC entry; using it as
+// an explicit section heading creates a duplicate in the sidebar.
+const RESERVED_HEADING = /^##\s+Overview\s*$/m;
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '../blueprints');
 
@@ -56,6 +60,16 @@ for (const tool of listDir(root)) {
     const files = entries
       .filter((e) => e.isFile() && !e.name.startsWith('.'))
       .map((e) => e.name);
+
+    for (const f of files) {
+      if (!f.endsWith('.md')) continue;
+      const content = fs.readFileSync(path.join(folderPath, f), 'utf8');
+      if (RESERVED_HEADING.test(content)) {
+        errors.push(
+          `${tool.name}/${folder.name}/${f} uses "## Overview" as a section heading — Starlight reserves "Overview" for the auto-generated TOC entry. Use a more specific heading (e.g. "## What this does").`
+        );
+      }
+    }
 
     if (TYPE_FOLDERS.has(folder.name)) {
       for (const f of files) {

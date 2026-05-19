@@ -85,11 +85,13 @@ tags: ["global", "behavior", "onetime"]
 
 ### Prose section
 
-After the frontmatter, write the human-facing docs:
+After the frontmatter, write the human-facing docs using these headings in order:
 
-- An overview of what the blueprint does and when to use it.
-- Prerequisites and execution notes (state the user should be in, markers, idempotency checks).
-- The prompt itself, in a fenced `text` block, containing the literal text to paste.
+1. `## What this does` — what the blueprint does and when to use it.
+2. `## Prerequisites & Execution` — state the user should be in, markers, idempotency checks.
+3. `## The Prompt` — the prompt itself, in a fenced `text` block containing the literal text to paste.
+
+> **Do not use `## Overview` as a heading.** Starlight auto-generates an "Overview" entry at the top of every page's table of contents. Using that heading yourself creates a duplicate. The linter (`npm run lint:structure`) will flag it.
 
 Look at [`blueprints/claude-code/core-setup/phase-0.md`](blueprints/claude-code/core-setup/phase-0.md) as the reference shape.
 

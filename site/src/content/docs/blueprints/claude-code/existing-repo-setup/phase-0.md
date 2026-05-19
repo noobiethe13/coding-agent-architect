@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["existing-repo", "claude-md", "red-flags", "lessons-learned"]
 ---
 
-## Overview
+## What this does
 
 This phase adds structured advanced infrastructure on top of what the built-in `/init` command already provides. It writes directly to your project's `CLAUDE.md` to add:
 

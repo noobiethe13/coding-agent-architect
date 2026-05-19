@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["existing-repo", "skills", "rules", "knowledge"]
 ---
 
-## Overview
+## What this does
 
 This phase adds reference-knowledge content that loads intelligently rather than cluttering your main `CLAUDE.md`. It generates two types of artifacts based on your project's needs:
 

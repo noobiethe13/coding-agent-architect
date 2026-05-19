@@ -9,7 +9,7 @@ recommended_model: "Opus 4.7"
 tags: ["global", "behavior", "onetime"]
 ---
 
-## Overview
+## What this does
 
 This prompt installs universal behavioral principles into `~/.claude/CLAUDE.md` (the User-level memory). These principles persist across every Claude Code session you run on this machine, regardless of the project.
 

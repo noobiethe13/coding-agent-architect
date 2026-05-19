@@ -15,7 +15,7 @@ export default defineConfig({
 				ThemeSelect: './src/components/ThemeToggle.astro',
 				PageTitle: './src/components/PageTitle.astro',
 			},
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/nobbiethe13/coding-agent-architect' }],
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/noobiethe13/coding-agent-architect' }],
 			sidebar: [
 				{
 					label: 'Blueprints',

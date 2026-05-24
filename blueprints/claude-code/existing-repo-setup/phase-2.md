@@ -11,9 +11,10 @@ tags: ["existing-repo", "agents", "skills", "workflows"]
 
 ## What this does
 
-This phase adds specialist subagents (which run in a separate context window with persistent memory and isolated tools) and their paired workflow skills (the slash commands you invoke). 
+This phase adds specialist subagents (which run in a separate context window with persistent memory and isolated tools) and their paired workflow skills (the slash commands you invoke).
 
 It provides soft-nudge candidates that you can choose from, or you can describe your own custom needs. Example pairings include:
+
 - **Quality Pair:** `code-quality-auditor` + `/audit` and `code-quality-remediator` + `/remediate`
 - **Security & Ecosystem:** `security-auditor` + `/security-audit` and `ecosystem-reviewer` + `/ecosystem-review`
 - **Review & Debugging:** `code-reviewer` + `/pr-review` and `bug-investigator` + `/rca`

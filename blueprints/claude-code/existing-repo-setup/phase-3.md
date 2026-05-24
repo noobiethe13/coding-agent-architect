@@ -14,6 +14,7 @@ tags: ["existing-repo", "session-continuity", "backlog", "permissions"]
 This phase sets up the infrastructure that lets multi-session work survive across separate Claude Code sessions. It creates a universal `session` skill that defines the 3-file pattern (`plan.md`, `context.md`, `tasks.md` in `.claude/session/`). This pattern is used for any long-running task, such as feature work, multi-session remediation, complex bug investigation, or architectural overhauls.
 
 Additionally, this phase:
+
 - Scaffolds the backlog files (`.claude/known-issues.md`, `.claude/security-findings.md`) if an earlier phase set up agents that need them.
 - Ensures `.gitignore` covers session working state.
 - Scaffolds `.claude/settings.json` permissions based on a selected profile.

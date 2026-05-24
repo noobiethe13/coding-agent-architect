@@ -6,7 +6,7 @@ Most teams using Claude Code or Cursor end up cobbling together their own setup.
 
 This repo collects vetted, versioned blueprints you can drop into any project so your AI assistant behaves the same way on every machine and for every contributor. Same setup whether you're solo, on a team of three, or rolling something out across a whole engineering org.
 
-Today it ships blueprints for Claude Code. Cursor, Copilot, Windsurf, and Codex are on the roadmap, and PRs are welcome.
+Today it ships blueprints for Claude Code and OpenAI Codex. Cursor, Copilot, and Windsurf are on the roadmap, and PRs are welcome.
 
 ## What's in here
 
@@ -44,6 +44,13 @@ blueprints/
     agents/                 # standalone sub-agent definitions
     skills/                 # standalone skills
     rules/                  # standalone project rules
+  codex/
+    core-setup/             # goal flow: one-time global setup (~/.codex/AGENTS.md)
+    existing-repo-setup/    # goal flow: onboard Codex into an existing repo
+    new-repo-setup/         # goal flow: scaffold a fresh Codex-ready repo
+    agents/                 # standalone custom agent .toml files
+    skills/                 # standalone skill folders (.agents/skills/<name>/)
+    rules/                  # standalone path-scoped AGENTS.md rules
 site/                       # Astro + Starlight docs site
 ```
 
@@ -66,7 +73,6 @@ PRs welcome for any of these:
 - Cursor (rules, agents)
 - GitHub Copilot (instructions, prompt files)
 - Windsurf (workflows, rules)
-- Codex (instructions, hooks)
 - Any other AI coding tool worth standardizing
 
 Each tool gets its own folder under `blueprints/`, and the community can contribute agents, skills, rules, and setup flows for it. Improvements to the core prompts are just as welcome as new ones.

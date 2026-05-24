@@ -11,14 +11,14 @@ tags: ["new-repo", "bootstrap", "intent-capture"]
 
 ## What this does
 
-The built-in `/init` command is optimized for exploring existing code. In an empty repository, there is nothing to explore, so it relies heavily on a gap-fill interview. 
+The built-in `/init` command is optimized for exploring existing code. In an empty repository, there is nothing to explore, so it relies heavily on a gap-fill interview.
 
 This Bootstrap phase captures your project intent *before* you run `/init`. It seeds the interactive interview with rich project context and nudges the setup toward structured workflow skills (like `/feature`, `/audit`, and `/remediate`). It outputs a temporary `.claude/session/project-intent.md` file for `/init` to read.
 
 ## Prerequisites & Execution
 
 - **When to use:** Use this *only* if the repository is empty or near-empty (no manifest files, no source code). If the repo has substantive existing code, skip this entirely and use the **Existing Repo Setup** path.
-- **Execution Order:** You must run this prompt **BEFORE** running `/init`. 
+- **Execution Order:** You must run this prompt **BEFORE** running `/init`.
 - **Next Steps:** After running this, run `/init CLAUDE_CODE_NEW_INIT=1`, then continue with the existing-repo-setup phases in order.
 - **Token cost:** Low. One reading pass and one `AskUserQuestion` interaction.
 

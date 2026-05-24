@@ -5,7 +5,7 @@ import { docsSchema } from '@astrojs/starlight/schema';
 const blueprintSchema = z.object({
   title: z.string().min(3).max(100),
   description: z.string().min(10).max(300),
-  tool: z.enum(['claude-code', 'cursor', 'copilot', 'windsurf']),
+  tool: z.enum(['claude-code', 'cursor', 'copilot', 'windsurf', 'codex']),
   type: z.enum(['agent', 'skill', 'rule', 'setup']),
   author: z.string().min(1).max(100),
   verified_version: z.string().regex(
